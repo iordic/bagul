@@ -1,54 +1,68 @@
 package utilities;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.bouncycastle.crypto.CipherParameters;
+import org.bouncycastle.crypto.engines.AESEngine;
+import org.bouncycastle.crypto.modes.CBCBlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
 
-public final class Crypto {
-
-	private static byte[] getSha256(String text) {
-		// TODO: return a bytearray with the SHA256 sum of the password
-		
+public class Crypto {
+	
+	private static byte[][] BytesToKey(String password) {
+		MessageDigest shaDigest;
+		MessageDigest md5Digest;
+		try {
+			shaDigest = MessageDigest.getInstance("SHA-256");
+			md5Digest = MessageDigest.getInstance("MD5");
+			byte [][] keys = new byte[2][];
+			keys[0] = shaDigest.digest(password.getBytes(StandardCharsets.UTF_8));
+			keys[1] = md5Digest.digest(password.getBytes(StandardCharsets.UTF_8));
+			return keys;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}		
 		return null;
 	}
 	
-	private static Keys EVP_BytesToKey(String password, int keySize, int ivSize) {
-		// TODO: D_i = HASH^count(D_(i-1) || data)
-
-		return null;
-	}
-	
-	public static byte[] encrypt(String password, String plainText) {
-		// TODO:
-
-		return null;
+	public static byte[] encrypt(String password, byte[] plainText) {
+		try {
+			PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
+			byte[][] keys = BytesToKey(password);
+			CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(keys[0]), keys[1]);
+			aes.init(true, ivAndKey);
+			return cipherData(aes, plainText);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static byte[] decrypt(String password, byte[] encryptedData) {
-		// TODO:
-		
-		return null;
+		try {
+			PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
+			byte[][] keys = BytesToKey(password);
+			CipherParameters ivAndKey = new ParametersWithIV(new KeyParameter(keys[0]), keys[1]);
+			aes.init(false, ivAndKey);
+			return cipherData(aes, encryptedData);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	private static byte[] cipherData(PaddedBufferedBlockCipher aes, byte[] data) throws Exception {
-		//TODO: this method is called by encrypt and decrypt methods and do the operations.
-		
-		return null;
-	}
-	
-	private class Keys {
-		private byte [] key;
-		private byte [] iv;
-		
-		private Keys(byte [] key, byte [] iv) {
-			this.key = key;
-			this.iv = iv;
-		}
-		
-		private byte[] getKey() {
-			return key;
-		}
-		
-		private byte[] getIV() {
-			return iv;
-		}
+		int minSize = aes.getOutputSize(data.length);
+		byte[] outBuf = new byte[minSize];
+		int length1 = aes.processBytes(data, 0, data.length, outBuf, 0);
+		int length2 = aes.doFinal(outBuf, length1);
+		int actualLength = length1 + length2;
+		byte[] result = new byte[actualLength];
+		System.arraycopy(outBuf, 0, result, 0, result.length);
+		return result;
 	}
 }
