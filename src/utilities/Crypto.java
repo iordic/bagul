@@ -13,6 +13,13 @@ import org.bouncycastle.crypto.params.ParametersWithIV;
 
 public class Crypto {
 	
+	/**
+	 * Generate Key and IV from password. Key is SHA-256 password digest 
+	 * and IV MD5 digest.
+	 * @param password encryption password in plaintext.
+	 * @return array with both digests, position 0 contains sha-2 digest
+	 * and position 1 contains md5 digests0 (both bytearrays).
+	 */
 	private static byte[][] BytesToKey(String password) {
 		MessageDigest shaDigest;
 		MessageDigest md5Digest;
@@ -29,6 +36,12 @@ public class Crypto {
 		return null;
 	}
 	
+	/**
+	 * Encrypt the message in bytearray format and encrypt with the password.
+	 * @param password String password
+	 * @param plainText message to encrypt
+	 * @return encrypted bytearray message
+	 */
 	public static byte[] encrypt(String password, byte[] plainText) {
 		try {
 			PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
@@ -42,6 +55,12 @@ public class Crypto {
 		}
 	}
 	
+	/**
+	 * Decrypt message with same password used to encrypt.
+	 * @param password the password needed to decrypt
+	 * @param encryptedData ciphertext to decrypt
+	 * @return plaintext as bytearray
+	 */
 	public static byte[] decrypt(String password, byte[] encryptedData) {
 		try {
 			PaddedBufferedBlockCipher aes = new PaddedBufferedBlockCipher(new CBCBlockCipher(new AESEngine()));
@@ -55,6 +74,13 @@ public class Crypto {
 		}
 	}
 	
+	/**
+	 * Used to process data in encryption and decryption.
+	 * @param aes engine for processing data
+	 * @param data data to process
+	 * @return processed data
+	 * @throws Exception
+	 */
 	private static byte[] cipherData(PaddedBufferedBlockCipher aes, byte[] data) throws Exception {
 		int minSize = aes.getOutputSize(data.length);
 		byte[] outBuf = new byte[minSize];
