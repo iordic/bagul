@@ -31,9 +31,8 @@ public class Crypto {
 			keys[1] = md5Digest.digest(password.getBytes(StandardCharsets.UTF_8));
 			return keys;
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
+			return null;
 		}		
-		return null;
 	}
 	
 	/**
@@ -50,7 +49,6 @@ public class Crypto {
 			aes.init(true, ivAndKey);
 			return cipherData(aes, plainText);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -69,7 +67,6 @@ public class Crypto {
 			aes.init(false, ivAndKey);
 			return cipherData(aes, encryptedData);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
