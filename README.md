@@ -6,23 +6,3 @@ To use the cryptography functions it needs the [BouncyCastle library](https://ww
 Once you downloaded it, copy it in lib folder and then, open Eclipse and import it: _Project > Properties > Java Build Path > Add JARs..._
 #### 2. Import the JUnit library for running testCases
 Open Eclipse and import: _Project > Properties > Java Build Path > Add Library... > JUnit > ..._
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-As Kanye West said:
-
-> We're living the future so
-> the present is our past.
