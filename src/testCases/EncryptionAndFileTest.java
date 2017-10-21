@@ -25,4 +25,15 @@ public class EncryptionAndFileTest {
 		f.removeMessage();
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	public void testExtractEncryptedMessage() throws IOException {
+		FileHandler f = new FileHandler(System.getProperty("user.dir") + "/src/testCases/testImages/catWithEncryptedMessage.jpg");
+		String password = "12345678";
+		byte [] encryptedMessage = f.extractMessage();
+		byte [] plainMessage = Crypto.decrypt(password, encryptedMessage);
+		String expected = "All your base are belong to us";
+		String actual = new String(plainMessage);
+		assertEquals(expected, actual);
+	}
 }
