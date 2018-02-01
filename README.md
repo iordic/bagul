@@ -3,8 +3,8 @@ A simple program to hide message into JPEG files (an approach to obfuscation).<b
 The hidden message is ciphered with _AES-256_ before putting it into the image.
 
 ## Screenshots
-![Encryption Screenshot](/screenshots/Screenshot-encryption.png)
-![Encryption Screenshot](/screenshots/Screenshot-decryption.png)
+![Encryption Screenshot](/screenshots/screenshot-encryption.png)
+![Encryption Screenshot](/screenshots/screenshot-decryption.png)
 
 ## How to start?
 This repository is made with the [**Eclipse**](https://www.eclipse.org/) IDE and it has its folder structure.
